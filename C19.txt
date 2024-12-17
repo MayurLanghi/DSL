@@ -1,0 +1,290 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+// Node definition
+struct Node {
+    int prn;         // PRN of the member
+    string name;     // Name of the member
+    Node *next;      // Pointer to the next node
+};
+
+// Linked List class
+class LinkedList {
+    Node *head;      // Head pointer of the list
+public:
+    LinkedList() { head = nullptr; }  // Constructor
+
+    Node* createNode(int prn, string name);
+    void insertPresident();
+    void insertSecretary();
+    void insertMember(int position);
+    void deletePresident();
+    void deleteSecretary();
+    void deleteMember(int position);
+    void display();
+    int countMembers();
+    void reverseList();
+    void reverseDisplayRecursive(Node* current);
+    void reverseDisplay();
+    void concatenate(LinkedList &listA, LinkedList &listB);
+    void listMenu(const string &listName);
+    void addMenu();
+    void deleteMenu();
+};
+
+// Function to create a new node
+Node* LinkedList::createNode(int prn, string name) {
+    Node *newNode = new Node;
+    newNode->prn = prn;
+    newNode->name = name;
+    newNode->next = nullptr;
+    return newNode;
+}
+
+// Insert President (at the beginning)
+void LinkedList::insertPresident() {
+    int prn;
+    string name;
+    cout << "Enter PRN: ";
+    cin >> prn;
+    cout << "Enter Name: ";
+    cin >> name;
+
+    Node *newNode = createNode(prn, name);
+    newNode->next = head;
+    head = newNode;
+    cout << "President added successfully!" << endl;
+}
+
+// Insert Secretary (at the end)
+void LinkedList::insertSecretary() {
+    int prn;
+    string name;
+    cout << "Enter PRN: ";
+    cin >> prn;
+    cout << "Enter Name: ";
+    cin >> name;
+
+    Node *newNode = createNode(prn, name);
+    if (head == nullptr) {
+        head = newNode;
+    } else {
+        Node *temp = head;
+        while (temp->next != nullptr) {
+            temp = temp->next;
+        }
+        temp->next = newNode;
+    }
+    cout << "Secretary added successfully!" << endl;
+}
+
+// Insert Member at specific position
+void LinkedList::insertMember(int position) {
+    int prn;
+    string name;
+    cout << "Enter PRN: ";
+    cin >> prn;
+    cout << "Enter Name: ";
+    cin >> name;
+
+    Node *newNode = createNode(prn, name);
+    if (position <= 1 || head == nullptr) {
+        insertPresident();
+    } else {
+        Node *temp = head;
+        for (int i = 1; i < position - 1 && temp->next != nullptr; i++) {
+            temp = temp->next;
+        }
+        newNode->next = temp->next;
+        temp->next = newNode;
+        cout << "Member added at position " << position << " successfully!" << endl;
+    }
+}
+
+// Delete President (first node)
+void LinkedList::deletePresident() {
+    if (head == nullptr) {
+        cout << "The list is empty!" << endl;
+        return;
+    }
+    Node *temp = head;
+    head = head->next;
+    delete temp;
+    cout << "President deleted successfully!" << endl;
+}
+
+// Delete Secretary (last node)
+void LinkedList::deleteSecretary() {
+    if (head == nullptr) {
+        cout << "The list is empty!" << endl;
+        return;
+    }
+    if (head->next == nullptr) { // Only one node
+        delete head;
+        head = nullptr;
+    } else {
+        Node *temp = head, *prev = nullptr;
+        while (temp->next != nullptr) {
+            prev = temp;
+            temp = temp->next;
+        }
+        prev->next = nullptr;
+        delete temp;
+    }
+    cout << "Secretary deleted successfully!" << endl;
+}
+
+// Delete Member at specific position
+void LinkedList::deleteMember(int position) {
+    if (head == nullptr || position <= 1) {
+        deletePresident();
+        return;
+    }
+    Node *temp = head, *prev = nullptr;
+    for (int i = 1; i < position && temp->next != nullptr; i++) {
+        prev = temp;
+        temp = temp->next;
+    }
+    prev->next = temp->next;
+    delete temp;
+    cout << "Member deleted from position " << position << " successfully!" << endl;
+}
+
+// Display all members
+void LinkedList::display() {
+    if (head == nullptr) {
+        cout << "The list is empty!" << endl;
+        return;
+    }
+    Node *temp = head;
+    cout << "Club Members: ";
+    while (temp != nullptr) {
+        cout << "[" << temp->prn << " - " << temp->name << "] -> ";
+        temp = temp->next;
+    }
+    cout << "NULL" << endl;
+}
+
+// Count the total members
+int LinkedList::countMembers() {
+    int count = 0;
+    Node *temp = head;
+    while (temp != nullptr) {
+        count++;
+        temp = temp->next;
+    }
+    return count;
+}
+
+// Reverse display using recursion
+void LinkedList::reverseDisplayRecursive(Node* current) {
+    if (current == nullptr) return;
+    reverseDisplayRecursive(current->next);
+    cout << "[" << current->prn << " - " << current->name << "] -> ";
+}
+
+void LinkedList::reverseDisplay() {
+    cout << "Reversed List: ";
+    reverseDisplayRecursive(head);
+    cout << "NULL" << endl;
+}
+
+// Concatenate two lists
+void LinkedList::concatenate(LinkedList &listA, LinkedList &listB) {
+    head = listA.head;
+    if (head == nullptr) {
+        head = listB.head;
+        return;
+    }
+    Node *temp = head;
+    while (temp->next != nullptr) {
+        temp = temp->next;
+    }
+    temp->next = listB.head;
+    cout << "Lists concatenated successfully!" << endl;
+}
+
+// Menu to manage a single list
+void LinkedList::listMenu(const string &listName) {
+    int choice;
+    while (true) {
+        cout << "\n" << listName << " Menu:\n"
+             << "1. Add\n"
+             << "2. Delete\n"
+             << "3. Count Members\n"
+             << "4. Reverse Display\n"
+             << "5. Display List\n"   // Added Display Option
+             << "6. Exit\n"
+             << "Enter your choice: ";
+        cin >> choice;
+        switch (choice) {
+            case 1: addMenu(); break;
+            case 2: deleteMenu(); break;
+            case 3: cout << "Total Members: " << countMembers() << endl; break;
+            case 4: reverseDisplay(); break;
+            case 5: display(); break; // Call display function
+            case 6: return;
+            default: cout << "Invalid choice! Try again." << endl;
+        }
+    }
+}
+
+
+void LinkedList::addMenu() {
+    int choice;
+    while (true) {
+        cout << "\nAdd Menu:\n1. Add President\n2. Add Secretary\n3. Add Member\n4. Exit\nEnter your choice: ";
+        cin >> choice;
+        switch (choice) {
+            case 1: insertPresident(); break;
+            case 2: insertSecretary(); break;
+            case 3: {
+                int pos;
+                cout << "Enter position to add: ";
+                cin >> pos;
+                insertMember(pos);
+                break;
+            }
+            case 4: return;
+            default: cout << "Invalid choice!" << endl;
+        }
+    }
+}
+
+void LinkedList::deleteMenu() {
+    int choice;
+    while (true) {
+        cout << "\nDelete Menu:\n1. Delete President\n2. Delete Secretary\n3. Delete Member\n4. Exit\nEnter your choice: ";
+        cin >> choice;
+        switch (choice) {
+            case 1: deletePresident(); break;
+            case 2: deleteSecretary(); break;
+            case 3: {
+                int pos;
+                cout << "Enter position to delete: ";
+                cin >> pos;
+                deleteMember(pos);
+                break;
+            }
+            case 4: return;
+            default: cout << "Invalid choice!" << endl;
+        }
+    }
+}
+
+int main() {
+    LinkedList listA, listB, listC;
+    int choice;
+    while (true) {
+        cout << "\nMain Menu:\n1. Manage List A\n2. Manage List B\n3. Concatenate Lists A and B\n4. Exit\nEnter your choice: ";
+        cin >> choice;
+        switch (choice) {
+            case 1: listA.listMenu("List A"); break;
+            case 2: listB.listMenu("List B"); break;
+            case 3: listC.concatenate(listA, listB); listC.display(); break;
+            case 4: return 0;
+            default: cout << "Invalid choice! Try again." << endl;
+        }
+    }
+}

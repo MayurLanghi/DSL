@@ -1,0 +1,212 @@
+/*
+Name: Anvesha Goydani
+Roll No.: 8
+PRN - F23112008
+Class: SE Comp 2
+Batch - P
+*/
+
+/*
+Problem Statement:
+Second Year Computer Engineering class, Set A of students like Vanilla ice-cream and set B of students like butterscotch ice-cream.
+Write C++ Program to store two sets using linked lists. Compute and display-
+a) Set of students who like both vanilla and butterscotch
+b) Set of students who like either vanilla or butterscotch or not both
+c) Number of students who like neither vanilla nor butterscotch
+*/
+
+#include <iostream>
+using namespace std;
+
+struct Node {
+    int roll;
+    Node *next;
+};
+
+class Info {
+private:
+    Node *allStudents, *vanillaLovers, *butterscotchLovers;
+
+    Node* createNode(int roll) {
+        Node *newNode = new Node;
+        newNode->roll = roll;
+        newNode->next = nullptr;
+        return newNode;
+    }
+
+    void insertNode(Node *&head, int roll) {
+        Node *newNode = createNode(roll);
+        if (!head) {
+            head = newNode;
+        } else {
+            Node *temp = head;
+            while (temp->next) temp = temp->next;
+            temp->next = newNode;
+        }
+    }
+
+    void displayList(Node *head) {
+        if (!head) {
+            cout << "No students found." << endl;
+            return;
+        }
+        Node *temp = head;
+        while (temp) {
+            cout << temp->roll << " ";
+            temp = temp->next;
+        }
+        cout << endl;
+    }
+
+    bool search(Node *head, int roll) {
+        Node *temp = head;
+        while (temp) {
+            if (temp->roll == roll) return true;
+            temp = temp->next;
+        }
+        return false;
+    }
+
+public:
+    Info() : allStudents(nullptr), vanillaLovers(nullptr), butterscotchLovers(nullptr) {}
+
+    void inputAllStudents() {
+        int n, roll;
+        cout << "Enter total number of students: ";
+        cin >> n;
+        for (int i = 0; i < n; i++) {
+            cout << "Enter roll number of student " << i + 1 << ": ";
+            cin >> roll;
+            insertNode(allStudents, roll);
+        }
+        cout << "All students: ";
+        displayList(allStudents);
+    }
+
+    void inputVanillaLovers() {
+        int n, roll;
+        cout << "Enter number of students who like vanilla: ";
+        cin >> n;
+        for (int i = 0; i < n; i++) {
+            cout << "Enter roll number: ";
+            cin >> roll;
+            insertNode(vanillaLovers, roll);
+        }
+        cout << "Vanilla lovers: ";
+        displayList(vanillaLovers);
+    }
+
+    void inputButterscotchLovers() {
+        int n, roll;
+        cout << "Enter number of students who like butterscotch: ";
+        cin >> n;
+        for (int i = 0; i < n; i++) {
+            cout << "Enter roll number: ";
+            cin >> roll;
+            insertNode(butterscotchLovers, roll);
+        }
+        cout << "Butterscotch lovers: ";
+        displayList(butterscotchLovers);
+    }
+
+    void studentsLikeBoth() {
+        cout << "Students who like both vanilla and butterscotch: ";
+        Node *temp = vanillaLovers;
+        while (temp) {
+            if (search(butterscotchLovers, temp->roll)) {
+                cout << temp->roll << " ";
+            }
+            temp = temp->next;
+        }
+        cout << endl;
+    }
+
+    void studentsLikeOnlyVanilla() {
+        cout << "Students who like only vanilla: ";
+        Node *temp = vanillaLovers;
+        while (temp) {
+            if (!search(butterscotchLovers, temp->roll)) {
+                cout << temp->roll << " ";
+            }
+            temp = temp->next;
+        }
+        cout << endl;
+    }
+
+    void studentsLikeOnlyButterscotch() {
+        cout << "Students who like only butterscotch: ";
+        Node *temp = butterscotchLovers;
+        while (temp) {
+            if (!search(vanillaLovers, temp->roll)) {
+                cout << temp->roll << " ";
+            }
+            temp = temp->next;
+        }
+        cout << endl;
+    }
+
+    void studentsLikeEither() {
+        cout << "Students who like vanilla or butterscotch (or both): ";
+        Node *temp = vanillaLovers;
+        while (temp) {
+            cout << temp->roll << " ";
+            temp = temp->next;
+        }
+        temp = butterscotchLovers;
+        while (temp) {
+            if (!search(vanillaLovers, temp->roll)) {
+                cout << temp->roll << " ";
+            }
+            temp = temp->next;
+        }
+        cout << endl;
+    }
+
+    void studentsLikeNeither() {
+        cout << "Students who like neither vanilla nor butterscotch: ";
+        Node *temp = allStudents;
+        while (temp) {
+            if (!search(vanillaLovers, temp->roll) && !search(butterscotchLovers, temp->roll)) {
+                cout << temp->roll << " ";
+            }
+            temp = temp->next;
+        }
+        cout << endl;
+    }
+};
+
+int main() {
+    Info obj;
+    int choice;
+    char cont;
+    do {
+        cout << "\nChoose an option:\n";
+        cout << "1. Input all students\n";
+        cout << "2. Input vanilla lovers\n";
+        cout << "3. Input butterscotch lovers\n";
+        cout << "4. Students who like both\n";
+        cout << "5. Students who like only vanilla\n";
+        cout << "6. Students who like only butterscotch\n";
+        cout << "7. Students who like either vanilla or butterscotch\n";
+        cout << "8. Students who like neither\n";
+        cout << "Choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1: obj.inputAllStudents(); break;
+            case 2: obj.inputVanillaLovers(); break;
+            case 3: obj.inputButterscotchLovers(); break;
+            case 4: obj.studentsLikeBoth(); break;
+            case 5: obj.studentsLikeOnlyVanilla(); break;
+            case 6: obj.studentsLikeOnlyButterscotch(); break;
+            case 7: obj.studentsLikeEither(); break;
+            case 8: obj.studentsLikeNeither(); break;
+            default: cout << "Invalid choice!" << endl;
+        }
+        cout << "\nDo you want to continue? (y/n): ";
+        cin >> cont;
+    } while (cont == 'y' || cont == 'Y');
+    return 0;
+}
+
+
