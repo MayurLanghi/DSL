@@ -117,6 +117,26 @@ def count_occurences():
     for i in range(len(word_list)):
         print(word_list[i], ":", count[i])
 
+# Function to copy a string
+def copy_string(string):
+    # Initialize an empty string to hold the copied value
+    copied = ""
+    # Loop through each character in the original string
+    for char in string:
+        # Append each character to the copied string
+        copied += char
+    return copied
+
+# Input string from the user
+string = input("Enter a string: ")
+
+# Copy the string
+copied_string = copy_string(string)
+
+# Display the result
+print("Original String:", string)
+print("Copied String:", copied_string)
+
         
 def main():
     while True:
@@ -125,10 +145,10 @@ def main():
         print("\t3: To check whether given string is palindrome or not")
         print("\t4: To display index of first appearance of the substring")
         print("\t5: To count the occurrences of each word in a given string")
-        print("\t6: Exit")
+        print("\t6: To show a copy string")
 
         ch = int(input("Enter your choice: "))
-        if ch >= 6:
+        if ch >= 7:
             print("End of program")
             break
 
@@ -146,6 +166,9 @@ def main():
 
         elif ch==5:
             count_occurences()
+        
+        elif ch==6:
+            copy_string()
 
 main()
 
